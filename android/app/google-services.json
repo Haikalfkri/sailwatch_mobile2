@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "613371430044",
+    "project_id": "sailwatch-48901",
+    "storage_bucket": "sailwatch-48901.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613371430044:android:f4b607b72c3c58032f5959",
+        "android_client_info": {
+          "package_name": "com.example.sailwatch_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBGnS0sO6KXRKL-k1Eb8WJJOAebLQYMLyw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
