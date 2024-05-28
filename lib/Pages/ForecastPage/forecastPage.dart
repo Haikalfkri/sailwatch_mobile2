@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sailwatch_mobile/Pages/BottomNavigationBar/navigationBar.dart';
 import 'package:sailwatch_mobile/Pages/ForecastPage/widget/nextForecastCard.dart';
-import 'package:sailwatch_mobile/Pages/Homepage/home_page.dart';
 import 'package:sailwatch_mobile/Pages/Homepage/widget/HourlyWeatherCard.dart';
 
 class forecastPage extends StatefulWidget {
@@ -27,7 +27,7 @@ class _forecastPageState extends State<forecastPage> {
           ),
           onPressed: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (context) => HomePage()));
+                context, MaterialPageRoute(builder: (context) => navigationBar()));
           },
         ),
         title: Text(
