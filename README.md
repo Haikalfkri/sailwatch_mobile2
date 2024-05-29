@@ -78,3 +78,20 @@ or
 You can look and check this link to get another data
 
 Weather api from ibnux github [wilayah](https://ibnux.github.io/BMKG-importer/cuaca/wilayah.json) and [cuaca](https://ibnux.github.io/BMKG-importer/cuaca/501601.json)
+
+
+
+# Contributing
+
+1. Make a new brench
+
+    ```bash
+    git checkout -b new-branch // nama branch baru
+    ```
+
+2. Push
+    push ke branch yang baru dibuat
+    
+    ```bash
+    git push -u origin new-branch
+    ```
