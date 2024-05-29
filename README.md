@@ -83,13 +83,16 @@ Weather api from ibnux github [wilayah](https://ibnux.github.io/BMKG-importer/cu
 
 # Contributing
 
-1. Make a new brench
+1. Clone repository
+
+2. Make a new branch before start to code
 
     ```bash
     git checkout -b new-branch // nama branch baru
     ```
+3. Make changes with the code
 
-2. Push
+4. Push
     push ke branch yang baru dibuat
 
     ```bash
