@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sailwatch_mobile/Pages/SearchPage/widget/searchWeatherCard.dart';
 
 class searchPage extends StatefulWidget {
   const searchPage({super.key});

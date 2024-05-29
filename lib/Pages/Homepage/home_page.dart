@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:sailwatch_mobile/Pages/ForecastPage/forecastPage.dart';
 import 'package:sailwatch_mobile/Pages/Homepage/widget/HourlyWeatherCard.dart';
 import 'package:sailwatch_mobile/Pages/Homepage/widget/weatherDetail.dart';
-
+import 'package:sailwatch_mobile/services/weatherServices.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -17,6 +17,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final XmlToJsonService xmlToJsonService = XmlToJsonService();
+  late Future<Map<String, dynamic>> jsonData;
+  
+  @override
+  void initState() {
+    super.initState();
+    jsonData = xmlToJsonService.fetchAndConvertXmlToJson();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

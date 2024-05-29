@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:sailwatch_mobile/Pages/BottomNavigationBar/navigationBar.dart';
 import 'package:sailwatch_mobile/Pages/ForecastPage/widget/nextForecastCard.dart';
 import 'package:sailwatch_mobile/Pages/Homepage/widget/HourlyWeatherCard.dart';

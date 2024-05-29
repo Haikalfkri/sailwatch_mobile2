@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:sailwatch_mobile/Pages/Homepage/home_page.dart';
 import 'firebase_options.dart';
 import 'package:intl/date_symbol_data_local.dart' as intl_local;
 
