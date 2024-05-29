@@ -9,7 +9,7 @@ To get started with the SailWatch Mobile App, follow these steps:
 1. Clone this repository to your local machine:
 
    ```bash
-   git clone https://github.com/yourusername/sailwatch-mobile.git
+   git clone https://github.com/Haikalfkri/sailwatch_mobile2.git
    ```
 
 2. Navigate into the project directory sailwatch_mobile2:
