@@ -35,7 +35,7 @@ To get started with the SailWatch Mobile App, follow these steps:
 
 The app fetches weather data from the BMKG API using the 'XmlToJsonService' class provided in the 'services' directory. This service fetches XML data from the BMKG API and converts it to JSON format for easier processing
 
-Weather services code:
+Weather services code ( xml to json ):
 
     ```dart
     import 'dart:convert';
@@ -91,7 +91,7 @@ Weather api from ibnux github [wilayah](https://ibnux.github.io/BMKG-importer/cu
 
 2. Push
     push ke branch yang baru dibuat
-    
+
     ```bash
     git push -u origin new-branch
     ```
