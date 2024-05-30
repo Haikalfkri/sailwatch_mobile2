@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class HumidityPage extends StatelessWidget {
+class LocalSensorCard extends StatelessWidget {
   final String title;
-  final int value;
+  final String condition;
+  final String value;
   final String imagePath;
 
-  const HumidityPage({
+  const LocalSensorCard({
     required this.title,
+    required this.condition,
     required this.value,
     required this.imagePath,
     Key? key,
@@ -15,11 +17,8 @@ class HumidityPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: Container(
-          padding: const EdgeInsets.all(20.0),
+    return Container(
+          margin: EdgeInsets.only(bottom: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -34,20 +33,13 @@ class HumidityPage extends StatelessWidget {
               SizedBox(height: 15),
               Container(
                 width: 342,
-                height: 120,
+                height: 80,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF88A7DC), // left color
-                      Color(0xFF1F4079), // right color
-                    ],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
+                  color: Color(0xFF34354f).withOpacity(0.9)
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  padding: const EdgeInsets.only(left: 20, right: 20),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -56,15 +48,15 @@ class HumidityPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "${value}%",
+                            "${value}",
                             style: GoogleFonts.inter(
-                              fontSize: 50,
+                              fontSize: 24,
                               fontWeight: FontWeight.normal,
                               color: Colors.white,
                             ),
                           ),
                           Text(
-                            "Normal",
+                            condition,
                             style: GoogleFonts.inter(
                               fontSize: 20,
                               fontWeight: FontWeight.normal,
@@ -75,7 +67,7 @@ class HumidityPage extends StatelessWidget {
                       ),
                       Image.asset(
                         imagePath, // Replace with your humidity-related image
-                        width: 70,
+                        width: 50,
                       ),
                     ],
                   ),
@@ -83,8 +75,6 @@ class HumidityPage extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
     );
   }
 }
