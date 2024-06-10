@@ -40,33 +40,30 @@ class _localDataState extends State<localData> {
               Column(
                 children: [
                   LocalSensorCard(
-                    title: "Humidity",
-                    condition: "normal",
-                    value: "70 %",
-                    imagePath: "assets/images/sunny.png"
-                  ),
+                      title: "Humidity",
+                      condition: "normal",
+                      value: "70 %",
+                      imagePath: "assets/images/sunny.png"),
                   LocalSensorCard(
-                    title: "Temperature",
-                    condition: "normal",
-                    value: "30 °C",
-                    imagePath: "assets/images/sunny.png"
-                  ),
+                      title: "Temperature",
+                      condition: "normal",
+                      value: "30 °C",
+                      imagePath: "assets/images/sunny.png"),
                   LocalSensorCard(
-                    title: "Wind Speed",
-                    condition: "normal",
-                    value: "10 km/h",
-                    imagePath: "assets/images/sunny.png"
-                  ),
+                      title: "Wind Speed",
+                      condition: "normal",
+                      value: "10 km/h",
+                      imagePath: "assets/images/sunny.png"),
                   LocalSensorCard(
-                    title: "Pressure",
-                    condition: "normal",
-                    value: "40 pha",
-                    imagePath: "assets/images/sunny.png"
-                  ),
-                  
+                      title: "Pressure",
+                      condition: "normal",
+                      value: "40 pha",
+                      imagePath: "assets/images/sunny.png"),
                 ],
               ),
-              SizedBox(height: 20,),
+              SizedBox(
+                height: 20,
+              ),
             ],
           ),
         ),
