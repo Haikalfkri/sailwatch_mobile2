@@ -19,7 +19,7 @@ class _navigationBarState extends State<navigationBar> {
     const HomePage(),
     const searchPage(),
     const notification(),
-    const localData(),
+    const LocalData(),
   ];
 
   void _onItemTapped(int index) {

@@ -5,13 +5,11 @@ class LocalSensorCard extends StatelessWidget {
   final String title;
   final String condition;
   final String value;
-  final String imagePath;
 
   const LocalSensorCard({
     required this.title,
     required this.condition,
     required this.value,
-    required this.imagePath,
     Key? key,
   }) : super(key: key);
 
@@ -64,10 +62,6 @@ class LocalSensorCard extends StatelessWidget {
                             ),
                           ),
                         ],
-                      ),
-                      Image.asset(
-                        imagePath, // Replace with your humidity-related image
-                        width: 50,
                       ),
                     ],
                   ),
