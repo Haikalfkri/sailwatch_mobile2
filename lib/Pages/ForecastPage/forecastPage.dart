@@ -1,18 +1,32 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 import 'package:sailwatch_mobile/Pages/BottomNavigationBar/navigationBar.dart';
 import 'package:sailwatch_mobile/Pages/ForecastPage/widget/nextForecastCard.dart';
 import 'package:sailwatch_mobile/Pages/Homepage/widget/HourlyWeatherCard.dart';
+import 'package:sailwatch_mobile/Pages/Homepage/widget/weatherDetail.dart';
+import 'package:sailwatch_mobile/services/weatherServices.dart';
 
 class forecastPage extends StatefulWidget {
-  const forecastPage({super.key});
+  const forecastPage({Key? key}) : super(key: key);
 
   @override
   State<forecastPage> createState() => _forecastPageState();
 }
 
 class _forecastPageState extends State<forecastPage> {
+  final XmlToJsonService xmlToJsonService = XmlToJsonService();
+  late Future<Map<String, dynamic>> jsonData;
+  DateTime now = DateTime.now();
+  @override
+  void initState() {
+    super.initState();
+    jsonData = xmlToJsonService.fetchAndConvertXmlToJson();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,8 +41,8 @@ class _forecastPageState extends State<forecastPage> {
             size: 24,
           ),
           onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => navigationBar()));
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => navigationBar()));
           },
         ),
         title: Text(

@@ -4,6 +4,7 @@ import 'package:sailwatch_mobile/Pages/Homepage/home_page.dart';
 import 'package:sailwatch_mobile/Pages/SearchPage/SearchPage.dart';
 import 'package:sailwatch_mobile/Pages/Notification/notification.dart';
 import 'package:sailwatch_mobile/Pages/LocalDataPage/localDataPage.dart';
+import 'package:sailwatch_mobile/Pages/LoginPage/Login.dart';
 
 class navigationBar extends StatefulWidget {
   const navigationBar({super.key});
@@ -20,6 +21,7 @@ class _navigationBarState extends State<navigationBar> {
     const searchPage(),
     const notification(),
     const localData(),
+    const LoginScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -48,7 +50,9 @@ class _navigationBarState extends State<navigationBar> {
               icon: ImageIcon(AssetImage("assets/icons/notification.png")),
               label: ''),
           BottomNavigationBarItem(
-              icon: ImageIcon(AssetImage("assets/icons/local.png")), label: '')
+              icon: ImageIcon(AssetImage("assets/icons/local.png")), label: ''),
+          BottomNavigationBarItem(  // Added Login Icon
+              icon: ImageIcon(AssetImage("assets/icons/login.png")), label: '')
         ],
       ),
     );
