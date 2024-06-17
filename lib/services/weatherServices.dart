@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:xml2json/xml2json.dart';
 import 'package:intl/intl.dart';
 
@@ -16,18 +17,13 @@ class XmlToJsonService {
 
       xml2json.parse(response.body);
       var jsonString = xml2json.toParker();
-      print('Converted JSON string: $jsonString'); // Logging JSON string
-
       var jsonData = json.decode(jsonString);
-      print('Parsed JSON data: $jsonData'); // Logging parsed JSON object
 
       if (jsonData.containsKey('data') &&
           jsonData['data'].containsKey('forecast') &&
           jsonData['data']['forecast'].containsKey('area')) {
         return jsonData;
       } else {
-        print(
-            'Unexpected JSON structure: $jsonData'); // Logging unexpected structure
         throw Exception('Unexpected JSON structure');
       }
     } else {

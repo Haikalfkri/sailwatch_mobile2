@@ -1,24 +1,23 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:sailwatch_mobile/Pages/LoginPage/Login.dart';
+import 'package:sailwatch_mobile/Pages/Registerpage/Register.dart';
 
-class Register extends StatefulWidget {
-  const Register({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
   @override
-  State<Register> createState() => _RegisterState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _RegisterState extends State<Register> {
+class _LoginScreenState extends State<LoginScreen> {
   final _usernameController = TextEditingController();
-  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  void _register() {
+  void _login() {
     String username = _usernameController.text;
-    String email = _emailController.text;
     String password = _passwordController.text;
-    print('Username: $username, Password: $password, Email: $email');
+    print('Username: $username, Password: $password');
     // Implementasi login logic di sini
   }
 
@@ -35,9 +34,10 @@ class _RegisterState extends State<Register> {
                 Center(
                   child: Image.asset('assets/images/logo.png', height: 300.0),
                 ),
+                SizedBox(height: 15),
                 Center(
                   child: Text(
-                    "Register",
+                    "Login",
                     style: GoogleFonts.inter(
                       color: Colors.white,
                       fontWeight: FontWeight.w600,
@@ -46,8 +46,27 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
                 SizedBox(height: 15),
+                Column(
+                  children: [
+                    Text(
+                      "Masukkan username dan password Anda",
+                      style: GoogleFonts.inter(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14),
+                    ),
+                    Text(
+                      "untuk mengakses aplikasi",
+                      style: GoogleFonts.inter(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14),
+                    ),
+                  ],
+                ),
               ],
             ),
+            SizedBox(height: 20),
             Column(
               children: [
                 Container(
@@ -94,35 +113,6 @@ class _RegisterState extends State<Register> {
                     ],
                   ),
                   child: TextField(
-                    controller: _emailController,
-                    style: TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFFFFFFFF),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        hintText: 'Email',
-                        prefixIcon: Icon(Icons.email)),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Container(
-                  height: 55,
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(10.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        offset: Offset(0, 2),
-                      )
-                    ],
-                  ),
-                  child: TextField(
                     controller: _passwordController,
                     obscureText: true,
                     style: TextStyle(color: Colors.black),
@@ -138,74 +128,57 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
                 SizedBox(height: 20.0),
-                Container(
-                  height: 55,
-                  decoration: BoxDecoration(
-                    color: Color(0xFFFFFFFF),
-                    borderRadius: BorderRadius.circular(10.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        offset: Offset(0, 2),
-                      )
-                    ],
-                  ),
-                  child: TextField(
-                    controller: _usernameController,
-                    style: TextStyle(color: Colors.black),
-                    decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFFFFFFFF),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        hintText: 'Konfirmasi password',
-                        prefixIcon: Icon(Icons.lock)),
-                  ),
-                ),
-                SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed: _register,
-                  child: Text('Register'),
+                  onPressed: _login,
+                  child: Text('Login'),
                   style: ElevatedButton.styleFrom(
                     padding:
-                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 40.0),
+                        EdgeInsets.symmetric(vertical: 12.0, horizontal: 20.0),
                     textStyle: TextStyle(fontSize: 16.0),
                     backgroundColor: Color(0xFF365B92),
                     foregroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
+                      borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
                 ),
                 SizedBox(height: 10),
+                TextButton(
+                  onPressed: () {
+                    // Aksi untuk lupa password
+                  },
+                  child: Text(
+                    'Lupa Password? Silahkan klik disini',
+                    style: GoogleFonts.inter(
+                      color: Colors.grey,
+                      fontSize: 14,
+                    ),
+                  ),
+                ),
                 Center(
                   child: RichText(
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: 'Sudah memiliki akun ? ',
+                          text: 'Belum memiliki akun ? ',
                           style: GoogleFonts.inter(
                             color: Colors.grey,
                             fontSize: 14,
                           ),
                         ),
                         TextSpan(
-                          text: 'Masuk sekarang',
+                          text: 'Buat akun disini!',
                           style: GoogleFonts.inter(
-                            color: Color(0xFF0F73CA), // warna #0F73CA
+                            color: Color(0xFF0F73CA),
                             fontSize: 14,
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              // Navigation to login page
+                              // Navigation to register page
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => LoginScreen(),
+                                  builder: (context) => Register(),
                                 ),
                               );
                             },

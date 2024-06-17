@@ -26,10 +26,10 @@ class _HomePageState extends State<HomePage> {
     jsonData = xmlToJsonService.fetchAndConvertXmlToJson();
     jsonData.then((data) {
       print(
-          'Fetched and converted JSON data: $data'); // Tambahkan log ini untuk melihat data asli
+          'Fetched and converted JSON data: $data'); // Log this to see the original data
       setState(() {});
     });
-    currentDateFormatted = DateFormat('EEEE, d MMM yyyy').format(now);
+    currentDateFormatted = DateFormat('EEEE, d MMM yyyy', 'id').format(now);
   }
 
   num parseNumber(dynamic value) {
@@ -122,7 +122,10 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  String formatDateTime(String datetime) {
+  String formatDateTime(String? datetime) {
+    if (datetime == null) {
+      return 'N/A';
+    }
     try {
       // Parsing format datetime dari XML
       DateTime dt = DateFormat("yyyyMMddHHmm").parse(datetime);
@@ -149,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (!snapshot.hasData) {
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                 return const Center(child: Text('Tidak ada data tersedia'));
               } else {
                 try {
@@ -203,6 +206,12 @@ class _HomePageState extends State<HomePage> {
                     } catch (e) {
                       print('Error converting data to string: $e');
                     }
+
+                    // Hitung waktu untuk interval 6 jam
+                    List<String> exampleTimes = List.generate(4, (index) {
+                      return DateFormat('HH:mm')
+                          .format(now.add(Duration(hours: 6 * index)));
+                    });
 
                     return Column(
                       children: [
@@ -260,43 +269,49 @@ class _HomePageState extends State<HomePage> {
                               "Today",
                               style: GoogleFonts.inter(
                                 fontSize: 18,
+                                fontWeight: FontWeight.bold,
                                 color: Colors.white,
-                                fontWeight: FontWeight.w500,
                               ),
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => const forecastPage(),
-                                ));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => forecastPage(),
+                                  ),
+                                );
                               },
                               child: Text(
-                                "View Full Forecast",
+                                "View Forecast",
                                 style: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  color: const Color(0xFF1d86de),
-                                  fontWeight: FontWeight.w500,
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey,
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 15),
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
-                            children: hourlyWeather.map<Widget>((hourData) {
+                            children: List.generate(
+                                hourlyWeather.length > 4
+                                    ? 4
+                                    : hourlyWeather
+                                        .length, // Batasi jumlah item menjadi maksimal 4
+                                (index) {
+                              var hourData = hourlyWeather[index];
+                              var time = '';
+                              if (index < exampleTimes.length) {
+                                time = exampleTimes[
+                                    index]; // Gunakan waktu untuk interval 6 jam
+                              }
+
                               // Log untuk memeriksa struktur data
-                              print('hourData: ${hourData}');
-
-                              var time = (hourData != null &&
-                                      hourData.containsKey('@datetime') &&
-                                      hourData['@datetime'] != null)
-                                  ? formatDateTime(hourData['@datetime'])
-                                  : 'N/A';
-
-                              print(
-                                  'Formatted time: $time'); // Log tambahan untuk melihat waktu terformat
+                              print('hourData: $hourData');
 
                               var temp = hourData['value'] != null &&
                                       hourData['value'].length > 0
