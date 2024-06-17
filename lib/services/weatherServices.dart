@@ -10,7 +10,6 @@ class XmlToJsonService {
 
   Future<Map<String, dynamic>> fetchAndConvertXmlToJson() async {
     final response = await http.get(Uri.parse(apiUrl));
-    List<Map<String, dynamic>> forecastList = [];
 
     if (response.statusCode == 200) {
       print('Fetched XML data: ${response.body}'); // Logging XML data
@@ -37,125 +36,185 @@ class XmlToJsonService {
   }
 
   Future<List<Map<String, dynamic>>> fetchWeatherForecast() async {
-    final response = await http.get(Uri.parse(apiUrl));
-    final DateTime now = DateTime.now();
-    final DateFormat dateFormat = DateFormat('yyyyMMddTHHmm');
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
 
-    List<Map<String, dynamic>> forecastList =
-        []; // Initialize with an empty list
+      if (response.statusCode == 200) {
+        Xml2Json xml2json = Xml2Json(); // Initialize xml2json
+        xml2json.parse(response.body); // Parse XML to json-like
+        var jsonData = xml2json.toParker(); // Convert xml to json
 
-    if (response.statusCode == 200) {
-      final jsonData = _parseXmlToJson(response.body);
+        var decodedData = jsonDecode(jsonData); // Decode JSON
 
-      if (jsonData['data']['forecast']['area'] is List) {
-        var areaList = jsonData['data']['forecast']['area'] as List;
+        List<Map<String, dynamic>> forecasts = [];
 
-        for (var area in areaList) {
-          var forecastDates = area['parameter'][1]['timerange'];
-          for (var date in forecastDates) {
-            DateTime forecastDate = dateFormat.parse(date['@datetime']);
-            if (forecastDate.isAfter(now) &&
-                forecastDate.isBefore(now.add(Duration(days: 3)))) {
-              var temperatureValues =
-                  area['parameter'][5]['timerange'][0]['value'];
-              var weatherCodeValues =
-                  area['parameter'][6]['timerange'][0]['value'];
+        // Iterate over each area
+        var areas = decodedData['data']['forecast']['area'];
+        if (areas is List) {
+          for (var area in areas) {
+            var areaId = area['@id'];
+            var areaName = area['name'][0]['\$t']; // English name
 
-              var temperature =
-                  (temperatureValues is List && temperatureValues.isNotEmpty)
-                      ? temperatureValues[0]
-                      : 'N/A';
-              var weatherCode =
-                  (weatherCodeValues is List && weatherCodeValues.isNotEmpty)
-                      ? weatherCodeValues[1]
-                      : '0';
+            // Initialize variables to store parameter data
+            List<Map<String, dynamic>> temperatureData = [];
+            List<Map<String, dynamic>> humidityData = [];
+            List<Map<String, dynamic>> windSpeedData = [];
 
-              forecastList.add({
-                'day': DateFormat('EEEE').format(forecastDate),
-                'date': DateFormat('dd MMM yyyy').format(forecastDate),
-                'temperature': temperature.toString(),
-                'weatherCode': weatherCode.toString(),
-              });
+            // Extract temperature data
+            var tempParameter = area['parameter'].firstWhere(
+                (param) => param['@id'] == 't' && param['timerange'] is List,
+                orElse: () => null);
+            if (tempParameter != null) {
+              var tempRanges = tempParameter['timerange'];
+              for (var entry in tempRanges) {
+                var dateTime = DateTime.parse(entry['@datetime']);
+                var tempValues = entry['value'];
+                var temperatureC = tempValues.firstWhere(
+                    (value) => value['unit'] == 'C',
+                    orElse: () => null)['\$t'];
+                if (temperatureC != null) {
+                  temperatureData.add({
+                    'dateTime': dateTime,
+                    'temperatureC': double.parse(temperatureC),
+                  });
+                }
+              }
             }
-          }
-        }
-        return forecastList;
-      } else {
-        throw Exception('Unexpected JSON structure');
-      }
-    } else {
-      throw Exception('Failed to load data');
-    }
-  }
 
-  Map<String, dynamic> _parseXmlToJson(String xmlData) {
-    xml2json.parse(xmlData);
-    var jsonString = xml2json.toParker();
-    print(jsonString);
-    // Check if jsonString is not null before decoding
-    // ignore: unnecessary_null_comparison
-    return jsonString != null ? json.decode(jsonString) : null;
+            // Extract humidity data
+            var humidityParameter = area['parameter'].firstWhere(
+                (param) => param['@id'] == 'hu' && param['timerange'] is List,
+                orElse: () => null);
+            if (humidityParameter != null) {
+              var humRanges = humidityParameter['timerange'];
+              for (var entry in humRanges) {
+                var dateTime = DateTime.parse(entry['@datetime']);
+                var humidityValue = entry['value'].firstWhere(
+                    (value) => value['unit'] == '%',
+                    orElse: () => null)['\$t'];
+                if (humidityValue != null) {
+                  humidityData.add({
+                    'dateTime': dateTime,
+                    'humidity': int.parse(humidityValue),
+                  });
+                }
+              }
+            }
+
+            // Extract wind speed data
+            var windParameter = area['parameter'].firstWhere(
+                (param) => param['@id'] == 'ws' && param['timerange'] is List,
+                orElse: () => null);
+            if (windParameter != null) {
+              var windRanges = windParameter['timerange'];
+              for (var entry in windRanges) {
+                var dateTime = DateTime.parse(entry['@datetime']);
+                var windSpeedValue = entry['value'].firstWhere(
+                    (value) => value['unit'] == 'Kt',
+                    orElse: () => null)['\$t'];
+                if (windSpeedValue != null) {
+                  windSpeedData.add({
+                    'dateTime': dateTime,
+                    'windSpeedKt': double.parse(windSpeedValue),
+                  });
+                }
+              }
+            }
+
+            // Add forecast data for this area
+            forecasts.add({
+              'areaId': areaId,
+              'areaName': areaName,
+              'temperatureData': temperatureData,
+              'humidityData': humidityData,
+              'windSpeedData': windSpeedData,
+            });
+          }
+        } else {
+          print('Error: No areas found');
+        }
+
+        return forecasts;
+      } else {
+        print(
+            'Error: Failed to load weather data, status code: ${response.statusCode}');
+        throw Exception('Failed to load weather data');
+      }
+    } catch (e) {
+      print('Error fetching weather data: $e');
+      throw Exception('Error fetching weather data');
+    }
   }
 }
 
+//   Future<List<Map<String, dynamic>>> fetchWeatherForecast() async {
+//     try {
+//       // Fetch the XML data from the API
+//       final response = await http.get(Uri.parse(apiUrl));
+//       if (response.statusCode == 200) {
+//         // Convert XML to JSON-like format
+//         xml2json.parse(response.body);
+//         var jsonData = xml2json.toParker();
 
+//         // Decode the JSON data
+//         var decodedData = jsonDecode(jsonData);
 
-    // Implement XML to JSON parsing logic here
-    // For simplicity, I'm skipping the actual parsing logic in this example
-// Placeholder for parsed JSON data
+//         // Extract relevant forecast data
+//         List<Map<String, dynamic>> forecasts = [];
+//         var forecastList = decodedData['data']['forecast']['area']['parameter'];
 
-  // Future<List<Map<String, dynamic>>> fetchWeatherForecast() async {
-  //   final response = await http.get(Uri.parse(apiUrl));
-  //   final DateTime now = DateTime.now();
-  //   final DateFormat dateFormat = DateFormat('yyyyMMddTHHmm');
+//         // Ensure we have the correct data structure
+//         if (forecastList is List) {
+//           for (var parameter in forecastList) {
+//             // Check if the parameter contains temperature data
+//             if (parameter['@id'] == 't') {
+//               var tempData = parameter['timerange'];
 
-  //   final List<Map<String, dynamic>> forecastList = [];
+//               if (tempData is List) {
+//                 for (var entry in tempData) {
+//                   // Extract date and temperature
+//                   var dateTime = DateTime.parse(entry['@datetime']);
+//                   if (dateTime.isAfter(DateTime.now())) {
+//                     var temperature =
+//                         entry['value']['\$t']; // Extract the temperature value
+//                     forecasts.add({
+//                       'day': DateFormat('EEEE').format(dateTime),
+//                       'date': DateFormat('yMd').format(dateTime),
+//                       'temperature': temperature,
+//                       'weatherCode':
+//                           '0', // Placeholder, replace with actual code
+//                     });
+//                   }
+//                 }
+//               } else if (tempData is Map) {
+//                 // If there's only one entry, handle it as a single map
+//                 var dateTime = DateTime.parse(tempData['@datetime']);
+//                 var temperature =
+//                     tempData['value']['\$t']; // Extract the temperature value
+//                 forecasts.add({
+//                   'day': DateFormat('EEEE').format(dateTime),
+//                   'date': DateFormat('yMd').format(dateTime),
+//                   'temperature': temperature,
+//                   'weatherCode': '0', // Placeholder, replace with actual code
+//                 });
+//               }
+//             }
+//           }
+//         } else {
+//           print('Error: forecastList is not a List');
+//         }
 
-  //   if (jsonData['data']['forecast']['area'] is List) {
-  //     var areaList = jsonData['data']['forecast']['area'];
+//         // Return the forecast data
+//         return forecasts;
+//       } else {
+//         print(
+//             'Error: Failed to load weather data, status code: ${response.statusCode}');
+//         throw Exception('Failed to load weather data');
+//       }
+//     } catch (e) {
+//       print('Error fetching weather data: $e');
+//       throw Exception('Error fetching weather data');
+//     }
+//   }
+// }
 
-  //     for (var area in areaList) {
-  //       var forecastDates = area['parameter'][1]['timerange'];
-  //       for (var date in forecastDates) {
-  //         DateTime forecastDate = dateFormat.parse(date['@datetime']);
-  //         print('Processing date: $forecastDate'); // Logging forecast date
-  //         if (forecastDate.isAfter(now) &&
-  //             forecastDate.isBefore(now.add(Duration(days: 5)))) {
-  //           var temperatureValues =
-  //               area['parameter'][5]['timerange'][0]['value'];
-  //           var weatherCodeValues =
-  //               area['parameter'][6]['timerange'][0]['value'];
-
-  //           print(
-  //               'Temperature values: $temperatureValues'); // Logging temperature values
-  //           print(
-  //               'Weather code values: $weatherCodeValues'); // Logging weather code values
-
-  //           var temperature =
-  //               (temperatureValues is List && temperatureValues.isNotEmpty)
-  //                   ? temperatureValues[0]
-  //                   : 'N/A';
-  //           var weatherCode =
-  //               (weatherCodeValues is List && weatherCodeValues.isNotEmpty)
-  //                   ? weatherCodeValues[1]
-  //                   : '0';
-
-  //           print('Temperature: $temperature'); // Logging temperature
-  //           print('Weather code: $weatherCode'); // Logging weather code
-  //           print(
-  //               'Adding forecast for date: $forecastDate with temp $temperature and code $weatherCode'); // Logging added date
-  //           forecastList.add({
-  //             'day': DateFormat('EEEE').format(forecastDate),
-  //             'date': DateFormat('dd MMM yyyy').format(forecastDate),
-  //             'temperature': temperature?.toString(),
-  //             'weatherCode': weatherCode?.toString(),
-  //           });
-  //         }
-  //       }
-  //     }
-  //   } else {
-  //     throw Exception('Unexpected JSON structure');
-  //   }
-  //   print('Final forecast list: $forecastList'); // Logging final list
-  //   return forecastList;
-  // }

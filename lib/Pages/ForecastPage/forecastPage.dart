@@ -172,7 +172,11 @@ class _forecastPageState extends State<forecastPage> {
                   } else if (!snapshot.hasError) {
                     return Center(child: Text('Error: ${snapshot.error}'));
                   } else if (!snapshot.hasData) {
-                    return const Center(child: Text('Tidak ada data tersedia'));
+                    return const Center(
+                        child: Text('Tidak ada data tersedia',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            )));
                   } else {
                     try {
                       var forecastList = snapshot.data!.map<Widget>((forecast) {
